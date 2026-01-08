@@ -48,3 +48,5 @@ build/
 *.npy
 *.pth
 *.onnx
+
+/html

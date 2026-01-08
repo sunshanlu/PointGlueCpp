@@ -5,20 +5,37 @@
 #include "pointgluecpp/SuperPoint/SuperPointEngine.h"
 
 namespace sp {
-/// onnxruntime 推理引擎适配器
+/**
+ * @brief ONNX Runtime 推理引擎实现
+ *
+ * 使用 ONNX Runtime 作为后端实现 SuperPoint 推理引擎接口
+ * 支持 CPU 和 CUDA（如果可用）执行提供程序
+ */
 class ONNXRuntimeEngine final : public SuperPointEngine {
 public:
 	using SessionPtr = std::unique_ptr<Ort::Session>;
 
-
 	/**
-	 * 运行推理
+	 * @brief 运行 SuperPoint 模型推理
 	 *
-	 * @param data 输入的待推理的数据指针
-	 * @return 输出的‘裸’推理结果
+	 * @param data 输入图像数据指针（已预处理的浮点数组）
+	 * @return std::array<TensorView<float>, 2> 推理结果张量
 	 */
 	std::array<TensorView<float>, 2> RunInference(float *data) override;
 
+	/**
+	 * @brief 创建 ONNX Runtime 引擎实例
+	 *
+	 * 工厂方法，用于创建 ONNXRuntimeEngine 对象
+	 *
+	 * @param model_path ONNX 模型文件路径
+	 * @param input_names 输入节点名称列表
+	 * @param output_names 输出节点名称列表
+	 * @param input_dims 输入张量维度
+	 * @param output_dims0 第一个输出张量维度
+	 * @param output_dims1 第二个输出张量维度
+	 * @return InferencePtr 引擎智能指针
+	 */
 	static InferencePtr CreateInstance(const std::string &model_path,
 	                                   const std::vector<const char *> &input_names,
 	                                   const std::vector<const char *> &output_names,
@@ -28,38 +45,38 @@ public:
 
 protected:
 	/**
-	 * 创建onnxruntime的session
+	 * @brief 创建 ONNX Runtime 推理会话
 	 *
-	 * 1. session_options 配置
-	 * 2. cuda_options 配置
-	 * 3. 创建 onnxruntime session
+	 * 配置并初始化 ONNX Runtime 会话：
+	 * 1. 设置会话选项（图优化、线程数等）
+	 * 2. 检测并配置 CUDA 执行提供程序（如果可用）
+	 * 3. 创建 ONNX Runtime 会话对象
 	 *
-	 * @param model_path 输入的模型路径
-	 * @return error message
+	 * @param model_path ONNX 模型文件路径
+	 * @return const char* 错误信息，成功返回 nullptr
 	 */
 	const char *CreateSession(const std::string &model_path) override;
 
 	/**
-	 * 热处理底层软件的初始化
+	 * @brief 预热推理会话
 	 *
-	 * @return error message
+	 * 执行一次 dummy 推理以初始化 ONNX Runtime 的内部状态
+	 * 确保后续推理操作的延迟稳定
+	 *
+	 * @return const char* 错误信息，成功返回 nullptr
 	 */
 	const char *WarmUpSession() override;
 
 private:
 	/**
-	 * 创建onnxruntime的推理session
+	 * @brief 构造 ONNX Runtime 引擎
 	 *
-	 * 1. 创建onnxruntime的session @see ONNXRuntimeEngine::CreateSession
-	 * 2. 维护input nodes 和 ouput nodes属性
-	 * 3. 热处理底层软件的初始化 @see ONNXRuntimeEngine::WarmSession
-	 *
-	 * @param model_path 输入 onnxruntime 模型路径
-	 * @param input_names 输入节点名称
-	 * @param output_names 输出节点名称
-	 * @param input_dims 输入节点维度
-	 * @param output_dims0 输出节点维度0
-	 * @param output_dims1 输出节点维度1
+	 * @param model_path ONNX 模型文件路径
+	 * @param input_names 输入节点名称列表
+	 * @param output_names 输出节点名称列表
+	 * @param input_dims 输入张量维度
+	 * @param output_dims0 第一个输出张量维度
+	 * @param output_dims1 第二个输出张量维度
 	 */
 	ONNXRuntimeEngine(const std::string &model_path,
 	                  const std::vector<const char *> &input_names,
@@ -68,7 +85,7 @@ private:
 	                  const std::vector<int64_t> &output_dims0,
 	                  const std::vector<int64_t> &output_dims1);
 
-	Ort::Env env_;       //< onnxruntime 环境
-	SessionPtr session_; //< onnxruntime session
+	Ort::Env env_;       ///< ONNX Runtime 环境对象
+	SessionPtr session_; ///< ONNX Runtime 会话对象
 };
 }

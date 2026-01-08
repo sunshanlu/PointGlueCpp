@@ -48,11 +48,50 @@ SuperGlue::SuperGlue(OptionsPtr options)
 #endif
 }
 
+SuperGlue::OptionsPtr
+SuperGlue::Options::CreateFromYaml(const std::string& yaml_path)
+{
+  const cv::FileStorage fs(yaml_path, cv::FileStorage::READ);
+  if (!fs.isOpened())
+    throw std::runtime_error("Cannot open YAML file: " + yaml_path);
+
+  auto options = std::make_unique<Options>();
+  fs["model_path"] >> options->model_path;
+  fs["desc_dim"] >> options->desc_dim;
+  fs["keypoint_dim"] >> options->keypoint_dim;
+
+  // 读取输入节点名称（存储到字符串向量）
+  const cv::FileNode input_names_node = fs["input_names"];
+  for (const auto& node : input_names_node)
+  {
+    std::string name;
+    node >> name;
+    options->input_names_str.push_back(name); // 使用 std::string 存储
+  }
+
+  // 读取输出节点名称（存储到字符串向量）
+  const cv::FileNode output_names_node = fs["output_names"];
+  for (const auto& node : output_names_node)
+  {
+    std::string name;
+    node >> name;
+    options->output_names_str.push_back(name); // 使用 std::string 存储
+  }
+
+  // 更新指针向量（用于引擎接口）
+  options->UpdatePointers();
+
+  return options;
+}
+
 SuperGlue::Matches
 SuperGlue::RunSession(const SuperPointRet& kpts0,
                       const SuperPointRet& kpts1,
                       cv::Size shape0, cv::Size shape1)
 {
+  if (kpts0.keypoints.empty() || kpts1.keypoints.empty())
+    return Matches();
+
   SuperGlueInput superglue_input;
   Matches matches;
   CHECK(PreProcess(kpts0, kpts1, shape0, shape1, superglue_input));
@@ -202,7 +241,7 @@ const char* SuperGlue::PostProcess(TensorView<int64_t>& indices0,
 
   for (int idx = 0; idx < indices0.size_; ++idx)
   {
-    if (indices0.data()[idx] != -1)
+    if (indices0.data()[idx] != static_cast<int64_t>(-1))
       matches.count++;
   }
   return RET_OK;
@@ -210,6 +249,9 @@ const char* SuperGlue::PostProcess(TensorView<int64_t>& indices0,
 
 const char* SuperGlue::NormlizeKeypoints(cv::Mat& kpts, const cv::Size& shape)
 {
+  if (std::abs(std::max(shape.width, shape.height)) < 1e-5f)
+    return "shape error, max(shape.width, shape.height) == 0";
+
   const float& scaline = std::max(shape.width, shape.height) * 0.7f;
   cv::Mat center(1, 2, CV_32F), repeated_center;
   center.at<float>(0, 0) = shape.width / 2.0f;
@@ -251,6 +293,9 @@ const char* SuperGlue::MergeTwoImages(const cv::Mat& image0, const cv::Mat& imag
 
 const char* SuperGlue::MappingColors(const std::vector<float>& conf, std::vector<cv::Scalar>& colors)
 {
+  if (conf.empty())
+    return "Input confidence vector is empty";
+
   // 找到置信度的最大最小值，用于颜色映射
   float min_conf = 1.0f, max_conf = 0.0f;
   if (!conf.empty())

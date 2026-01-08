@@ -205,12 +205,29 @@ const char *ONNXRuntimeEngine::CreateSession(const std::string &model_path) {
 	env_ = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "SuperGlueEngine");
 	Ort::SessionOptions session_options;
 
+	// 使用 GetAvailableProviders API 检查可用的执行提供程序
+	// 避免在没有 CUDA 的系统中尝试加载 CUDA provider
 	try {
-		OrtCUDAProviderOptions cuda_options;
-		cuda_options.device_id = 0;
-		session_options.AppendExecutionProvider_CUDA(cuda_options);
-	} catch (...) {
-		SPDLOG_WARN("CUDA not available, falling back to CPU execution");
+		std::vector<std::string> available_providers = Ort::GetAvailableProviders();
+		bool cuda_available = false;
+
+		for (const auto &provider : available_providers) {
+			if (provider == "CUDAExecutionProvider") {
+				cuda_available = true;
+				break;
+			}
+		}
+
+		if (cuda_available) {
+			OrtCUDAProviderOptions cuda_options;
+			cuda_options.device_id = 0;
+			session_options.AppendExecutionProvider_CUDA(cuda_options);
+			SPDLOG_INFO("Using CUDA execution provider");
+		} else {
+			SPDLOG_INFO("CUDA execution provider not available, using CPU");
+		}
+	} catch (const std::exception &e) {
+		SPDLOG_WARN("Failed to query available providers: {}, using CPU", e.what());
 	}
 
 	session_options.SetGraphOptimizationLevel(ORT_ENABLE_ALL);
