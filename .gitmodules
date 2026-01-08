@@ -1,0 +1,3 @@
+[submodule "3rdparty/npycpp"]
+	path = 3rdparty/npycpp
+	url = https://github.com/sunshanlu/npycpp.git

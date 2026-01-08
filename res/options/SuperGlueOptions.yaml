@@ -1,0 +1,18 @@
+%YAML:1.0
+---
+model_path: "/home/ssl/Projects/learn/onnxruntime_learn/res/weights/superglue_indoor.onnx"
+
+input_names:
+  - "desc0"
+  - "desc1"
+  - "scores0"
+  - "scores1"
+  - "kpts0"
+  - "kpts1"
+
+output_names:
+  - "indices0"
+  - "mscores0"
+
+desc_dim: 256
+keypoint_dim: 2

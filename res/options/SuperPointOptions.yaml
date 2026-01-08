@@ -1,0 +1,25 @@
+%YAML:1.0
+---
+model_path: "/home/ssl/Projects/learn/onnxruntime_learn/res/weights/superpoint.onnx"
+width: 320
+height: 320
+border: 8
+conf_threshold: 0.015
+nms_dist: 4
+
+input_names:
+  - "grayscale image"
+
+input_dims:
+  - 1
+  - 1
+  - 320
+  - 320
+
+output_names:
+  - "semi"
+  - "desc"
+
+output_dims:
+  - [ 1, 65, 40, 40 ]
+  - [ 1, 256, 40, 40 ]
