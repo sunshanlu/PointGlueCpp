@@ -10,7 +10,7 @@ build:
   jobs:
     post_create_environment:
       - cd docs
-      - doxygen
+      - doxygen docs/Doxyfile
 
 sphinx:
   configuration: docs/source/conf.py
