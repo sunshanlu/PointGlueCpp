@@ -49,4 +49,4 @@ build/
 *.pth
 *.onnx
 
-/html
+/output/*.txt

@@ -1,33 +1,49 @@
-# .readthedocs.yaml
-# Read the Docs 配置文件
-
+# .readthedocs.yml
 version: 2
 
-# 设置 Python 版本
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.10"
+  jobs:
+    post_create_environment:
+      - cd docs
+      - doxygen Doxyfile
+    post_build:
+      # 构建Sphinx文档
+      - sphinx-build -b html source build/html
+      - sphinx-build -b latex source build/latex
+      - cd build/latex && make pdf
+
+sphinx:
+  configuration: docs/source/conf.py
+
 python:
-  version: 3.11
   install:
     - requirements: docs/requirements.txt
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
 
-# 构建文档
-sphinx:
-  configuration: docs/conf.py
-  fail_on_warning: false
+# 构建前准备
 
-# 构建格式
 formats:
   - pdf
-  - html
   - epub
+  - htmlzip
 
-# 如果需要 C++ 构建，可以启用
-cmake:
-  source: docs/source
+# 版本配置
+versions:
+  - 1.0.0
+  - devel
 
-# 搜索引擎优化
-seo:
-  canonical_url: true
-
-# 社交媒体卡片
-social:
-  cards: true
+# 文件忽略规则
+ignore:
+  - "**/*.o"
+  - "**/*.so"
+  - "**/*.a"
+  - "build/**"
+  - "3rdparty/**"
+  - "**/.git/**"
+  - "**/CMakeCache.txt"

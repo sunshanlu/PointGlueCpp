@@ -4,10 +4,11 @@ project(pointgluecpp VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(USE_ONNXRUNTIME "Use ONNX Runtime as inference engine" ON)
+option(USE_ONNXRUNTIME "Use ONNX Runtime as inference engine" OFF)
 option(USE_OPENVINO "Use OpenVINO as inference engine" ON)
 option(BUILD_EXAMPLES "Build examples for directory examples" ON)
 option(BUILD_TESTING "Build tests for directory test" ON)
+option(BUILD_BENCHMARKS "Build benchmarks using Google Benchmark" ON)
 
 if(NOT USE_ONNXRUNTIME AND NOT USE_OPENVINO)
   message(FATAL_ERROR "Place choose one inference engine at last!")
@@ -96,6 +97,11 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif(BUILD_TESTING)
 
+if(BUILD_BENCHMARKS)
+  find_package(benchmark REQUIRED)
+  add_subdirectory(benchmark)
+endif(BUILD_BENCHMARKS)
+
 
 # 安装路径配置
 set(PACKAGE_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
@@ -152,5 +158,6 @@ message(STATUS "USE_ONNXRUNTIME:      ${USE_ONNXRUNTIME}")
 message(STATUS "USE_OPENVINO:         ${USE_OPENVINO}")
 message(STATUS "BUILD_EXAMPLES:       ${BUILD_EXAMPLES}")
 message(STATUS "BUILD_TESTING:        ${BUILD_TESTING}")
+message(STATUS "BUILD_BENCHMARKS:     ${BUILD_BENCHMARKS}")
 message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS ${separator})

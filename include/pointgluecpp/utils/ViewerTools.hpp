@@ -20,10 +20,10 @@
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawCircles(cv::Mat &image,
-                        const cv::Mat &kpts,
-                        const cv::Scalar &color,
-                        const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawCircles(cv::Mat& image,
+                        const cv::Mat& kpts,
+                        const cv::Scalar& color,
+                        const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制圆圈（多色，cv::Mat 格式关键点）
@@ -34,10 +34,10 @@ const char *DrawCircles(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawCircles(cv::Mat &image,
-                        const cv::Mat &kpts,
-                        const std::vector<cv::Scalar> &colors,
-                        const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawCircles(cv::Mat& image,
+                        const cv::Mat& kpts,
+                        const std::vector<cv::Scalar>& colors,
+                        const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制圆圈（单色，KeyPoint 向量格式）
@@ -48,10 +48,10 @@ const char *DrawCircles(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawCircles(cv::Mat &image,
-                        const std::vector<cv::KeyPoint> &kpts,
-                        const cv::Scalar &color,
-                        const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawCircles(cv::Mat& image,
+                        const std::vector<cv::KeyPoint>& kpts,
+                        const cv::Scalar& color,
+                        const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制圆圈（多色，KeyPoint 向量格式）
@@ -62,10 +62,10 @@ const char *DrawCircles(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawCircles(cv::Mat &image,
-                        const std::vector<cv::KeyPoint> &kpts,
-                        const std::vector<cv::Scalar> &colors,
-                        const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawCircles(cv::Mat& image,
+                        const std::vector<cv::KeyPoint>& kpts,
+                        const std::vector<cv::Scalar>& colors,
+                        const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制圆圈（单色，原始指针格式）
@@ -77,11 +77,11 @@ const char *DrawCircles(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawCircles(cv::Mat &image,
-                        const cv::Point2f *pts,
-                        const std::size_t &num,
-                        const cv::Scalar &color,
-                        const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawCircles(cv::Mat& image,
+                        const cv::Point2f* pts,
+                        const std::size_t& num,
+                        const cv::Scalar& color,
+                        const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制圆圈（多色，原始指针格式）
@@ -93,11 +93,11 @@ const char *DrawCircles(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawCircles(cv::Mat &image,
-                        const cv::Point2f *pts,
-                        const std::size_t &num,
-                        const std::vector<cv::Scalar> &colors,
-                        const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawCircles(cv::Mat& image,
+                        const cv::Point2f* pts,
+                        const std::size_t& num,
+                        const std::vector<cv::Scalar>& colors,
+                        const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制匹配线（多色，原始指针格式）
@@ -110,12 +110,12 @@ const char *DrawCircles(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawLines(cv::Mat &image,
-                      const cv::Point2f *pts0,
-                      const cv::Point2f *pts1,
-                      const std::vector<int64_t> &matches,
-                      const std::vector<cv::Scalar> &colors,
-                      const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawLines(cv::Mat& image,
+                      const cv::Point2f* pts0,
+                      const cv::Point2f* pts1,
+                      const std::vector<int64_t>& matches,
+                      const std::vector<cv::Scalar>& colors,
+                      const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制匹配线（单色，原始指针格式）
@@ -128,12 +128,12 @@ const char *DrawLines(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawLines(cv::Mat &image,
-                      const cv::Point2f *pts0,
-                      const cv::Point2f *pts1,
-                      const std::vector<int64_t> &matches,
-                      const cv::Scalar &color,
-                      const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawLines(cv::Mat& image,
+                      const cv::Point2f* pts0,
+                      const cv::Point2f* pts1,
+                      const std::vector<int64_t>& matches,
+                      const cv::Scalar& color,
+                      const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制匹配线（多色，KeyPoint 向量格式）
@@ -146,12 +146,12 @@ const char *DrawLines(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawLines(cv::Mat &image,
-                      const std::vector<cv::KeyPoint> &kpts0,
-                      const std::vector<cv::KeyPoint> &pts1,
-                      const std::vector<int64_t> &matches,
-                      const std::vector<cv::Scalar> &colors,
-                      const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawLines(cv::Mat& image,
+                      const std::vector<cv::KeyPoint>& kpts0,
+                      const std::vector<cv::KeyPoint>& pts1,
+                      const std::vector<int64_t>& matches,
+                      const std::vector<cv::Scalar>& colors,
+                      const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制匹配线（单色，KeyPoint 向量格式）
@@ -164,12 +164,12 @@ const char *DrawLines(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawLines(cv::Mat &image,
-                      const std::vector<cv::KeyPoint> &kpts0,
-                      const std::vector<cv::KeyPoint> &pts1,
-                      const std::vector<int64_t> &matches,
-                      const cv::Scalar &color,
-                      const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawLines(cv::Mat& image,
+                      const std::vector<cv::KeyPoint>& kpts0,
+                      const std::vector<cv::KeyPoint>& pts1,
+                      const std::vector<int64_t>& matches,
+                      const cv::Scalar& color,
+                      const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制匹配线（多色，cv::Mat 格式）
@@ -182,12 +182,12 @@ const char *DrawLines(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawLines(cv::Mat &image,
-                      const cv::Mat &kpts0,
-                      const cv::Mat &kpts1,
-                      const std::vector<int64_t> &matches,
-                      const std::vector<cv::Scalar> &colors,
-                      const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawLines(cv::Mat& image,
+                      const cv::Mat& kpts0,
+                      const cv::Mat& kpts1,
+                      const std::vector<int64_t>& matches,
+                      const std::vector<cv::Scalar>& colors,
+                      const cv::Point2f& offset = {0.0f, 0.0f});
 
 /**
  * @brief 在图像上绘制匹配线（单色，cv::Mat 格式）
@@ -200,9 +200,9 @@ const char *DrawLines(cv::Mat &image,
  * @param offset 位置偏移量，默认为 (0, 0)
  * @return const char* 错误信息，成功返回 nullptr
  */
-const char *DrawLines(cv::Mat &image,
-                      const cv::Mat &kpts0,
-                      const cv::Mat &kpts1,
-                      const std::vector<int64_t> &matches,
-                      const cv::Scalar &color,
-                      const cv::Point2f &offset = {0.0f, 0.0f});
+const char* DrawLines(cv::Mat& image,
+                      const cv::Mat& kpts0,
+                      const cv::Mat& kpts1,
+                      const std::vector<int64_t>& matches,
+                      const cv::Scalar& color,
+                      const cv::Point2f& offset = {0.0f, 0.0f});

@@ -9,140 +9,174 @@
 
 namespace sp
 {
+/**
+ * @brief SuperPoint 特征点检测和描述符提取类
+ *
+ * 提供 SuperPoint 网络的完整推理流程，包括：
+ * - 图像预处理
+ * - 模型推理
+ * - 特征点检测和描述符提取
+ * - Fast-NMS 后处理
+ *
+ * 支持多种推理引擎（ONNX Runtime、OpenVINO）
+ */
 class SuperPoint
 {
 public:
+  /**
+   * @brief 前向声明输出结果结构体
+   */
   struct SuperPointRet;
+  /**
+   * @brief 前向声明配置项结构体
+   */
   struct Options;
   using OptionsPtr = std::unique_ptr<Options>;
 
-  /// SuperPoint的输出结果
+  /**
+   * @brief SuperPoint 推理输出结果
+   *
+   * 包含检测到的关键点和对应的 256 维描述子
+   */
   struct SuperPointRet
   {
-    std::vector<cv::KeyPoint> keypoints;
-    std::vector<std::array<float, 256>> keydesc;
+    std::vector<cv::KeyPoint> keypoints;         ///< 检测到的关键点列表
+    std::vector<std::array<float, 256>> keydesc; ///< 每个关键点的 256 维描述子
   };
 
-  /// SuperPoint配置项
+  /**
+   * @brief SuperPoint 配置项
+   *
+   * 定义 SuperPoint 模型的运行参数
+   */
   struct Options
   {
     friend class SuperPoint;
 
-    std::string model_path;                    //< 输入的模型路径
-    short width;                               //< 模型input的宽
-    short height;                              //< 模型input的高
-    short border;                              //< 后处理要求的边界
-    float conf_threshold;                      //< 关键点置信度阈值
-    short nms_dist;                            //< fast-nms的搜索半径
-    std::vector<std::string> input_names_str;  //< 输入节点名称（字符串存储）
-    std::vector<std::string> output_names_str; //< 输出节点名称（字符串存储）
-    std::vector<const char*> input_names;      //< 输入节点名称（指针，用于引擎接口）
-    std::vector<const char*> output_names;     //< 输出节点名称（指针，用于引擎接口）
-    std::vector<int64_t> input_dims;           //< 输入节点维度
-    std::vector<int64_t> output_dims0;         //< 输出节点维度0
-    std::vector<int64_t> output_dims1;         //< 输出节点维度1
+    std::string model_path;                    ///< ONNX 模型文件路径
+    short width;                               ///< 模型输入图像宽度
+    short height;                              ///< 模型输入图像高度
+    short border;                              ///< 后处理要求的边界大小
+    float conf_threshold;                      ///< 关键点置信度阈值
+    short nms_dist;                            ///< Fast-NMS 搜索半径
+    std::vector<std::string> input_names_str;  ///< 输入节点名称（字符串存储）
+    std::vector<std::string> output_names_str; ///< 输出节点名称（字符串存储）
+    std::vector<const char*> input_names;      ///< 输入节点名称（指针，用于引擎接口）
+    std::vector<const char*> output_names;     ///< 输出节点名称（指针，用于引擎接口）
+    std::vector<int64_t> input_dims;           ///< 输入张量维度
+    std::vector<int64_t> output_dims0;         ///< 第一个输出张量维度（semi-dense）
+    std::vector<int64_t> output_dims1;         ///< 第二个输出张量维度（descriptor）
 
     /**
-     * 根据输入的 yaml 文件创建配置项
+     * @brief 从 YAML 文件创建配置项
      *
-     * @param yaml_path 输入的yaml文件路径
-     * @return 输出的配置项指针
+     * @param yaml_path YAML 配置文件路径
+     * @return OptionsPtr 配置项智能指针
      */
     static OptionsPtr CreateFromYaml(const std::string& yaml_path);
 
   private:
     /**
-     * 更新指针向量：从字符串向量生成 const char* 指针向量
-     * 用于引擎接口
+     * @brief 更新指针向量
+     *
+     * 从字符串向量生成 const char* 指针向量，用于引擎接口
      */
     void UpdatePointers();
   };
 
   /**
-   * 创建 onnxruntime 的推理session
+   * @brief 构造 SuperPoint 对象
    *
-   * 1. 创建onnxruntime的session @see SuperPoint::CreateSession
-   * 2. 维护input nodes 和 ouput nodes属性
-   * 3. 热处理底层软件的初始化 @see SuperPoint::WarmSession
+   * 初始化推理引擎，创建推理会话并进行预热
    *
-   * @param options 输入配置项
+   * @param options SuperPoint 配置项
    */
   explicit SuperPoint(OptionsPtr options);
 
   /**
-   * 推理SuperPoint
+   * @brief 执行 SuperPoint 推理
    *
-   * 1. 前处理 @see SuperPoint::PreProcess
-   * 2. 使用指定 engine 进行模型推理 cuda
-   * 3. 后处理 @see SuperPoint::PostProcess
+   * 完整的推理流程包括：
+   * 1. 图像预处理（缩放、归一化）
+   * 2. 模型推理
+   * 3. 后处理（Fast-NMS、描述子插值）
    *
-   * @param input_image 输入的图片
-   * @return SuperPointRet 输出推理结果
+   * @param input_image 输入图像（灰度图）
+   * @return SuperPointRet 推理结果，包含关键点和描述子
    */
   SuperPointRet RunSession(const cv::Mat& input_image);
 
 private:
   /**
-   * 前处理操作
+   * @brief 图像预处理
    *
-   * 1. 缩放图像并convert float至 onnxruntime 模型输入要求
-   * 2. 创建 input_tersor
+   * 1. 缩放图像至模型输入尺寸
+   * 2. 转换为 float 类型并归一化
+   * 3. 创建输入张量
    *
-   * @param input_image		输入的图像
-   * @param xscale				输出的前处理图像x轴缩放比例
-   * @param yscale				输出的前处理图像y轴缩放比例
-   * @param engine_image		为了保证input_tensor的数据有效性，输出的onnx_image
-   * @return error message
+   * @param input_image 输入图像
+   * @param xscale 输出的 x 轴缩放比例
+   * @param yscale 输出的 y 轴缩放比例
+   * @param engine_image 输出的预处理后图像（保证内存有效性）
+   * @return const char* 错误信息，成功返回 nullptr
    */
   const char* PreProcess(const cv::Mat& input_image, float& xscale,
                          float& yscale, cv::Mat& engine_image);
 
   /**
-   * 后处理操作
+   * @brief 后处理操作
    *
-   * 1. output0的softmax操作，并丢弃掉最后一列
-   * 2. 将所有confidence中大于conf_threshold的点保存下来
-   * 3. 使用Fast-NMS操作，获取选择的点
-   * 4. 使用插值的方式获取指定特征点的desc
+   * 1. 对输出进行 softmax 操作
+   * 2. 过滤低置信度点
+   * 3. 使用 Fast-NMS 去除重复点
+   * 4. 使用双线性插值获取描述子
    *
-   * @param output_data	onnxruntime 推理输出张量
-   * @param xscale					x 轴缩放尺度
-   * @param yscale					y 轴缩放尺度
-   * @param result					输出的后处理结果 @see SuperPointRet
-   * @return error message
+   * @param output_data 推理输出张量
+   * @param xscale x 轴缩放尺度
+   * @param yscale y 轴缩放尺度
+   * @param result 输出的后处理结果
+   * @return const char* 错误信息，成功返回 nullptr
    */
   const char* PostProcess(std::array<TensorView<float>, 2>& output_data,
                           const float& xscale, const float& yscale, SuperPointRet& result);
 
-
+  /**
+   * @brief Fast-NMS 非极大值抑制
+   *
+   * @param locations 候选关键点位置
+   * @param confidence 关键点置信度图
+   * @return std::vector<cv::KeyPoint> 过滤后的关键点列表
+   */
   std::vector<cv::KeyPoint>
   FastNMS(std::vector<cv::Point>& locations, const cv::Mat& confidence);
 
   /**
-   * 双线性差值工具函数，要求有指定的输入数据
+   * @brief 双线性插值
    *
-   * @param data	<c, h, w>存储顺序的 float 数组
-   * @param x			要插值的 x 轴坐标
-   * @param y			要插值的 y 轴坐标
-   * @return std::array<float, 256> 插值后的结果
+   * 在描述子特征图上进行双线性插值，获取浮点坐标处的描述子
+   *
+   * @param data 描述子特征图数据 [c, h, w] 存储顺序
+   * @param x 要插值的 x 坐标
+   * @param y 要插值的 y 坐标
+   * @return std::array<float, 256> 插值后的 256 维描述子
    */
   std::array<float, 256>
   bilinearInterpolate(const float* data, const float& x, const float& y);
 
 #ifdef DEBUG
   /**
-   * 使用iostream保存张量数据到文件，debug 工具函数
+   * @brief 保存张量数据到文件（调试工具）
    *
    * @param tensor_data 要保存的张量数据
-   * @param size				要保存的张量尺寸大小
-   * @param file_path		要保存的文件路径
-   * @return error message
+   * @param size 张量元素数量
+   * @param file_path 输出文件路径
+   * @return const char* 错误信息，成功返回 nullptr
    */
   const char* SaveDataToFile(const float* tensor_data, size_t size,
                              const std::string& file_path);
 #endif
 
-  OptionsPtr options_;                    //< 输入配置项
-  SuperPointEngine::InferencePtr engine_; //< 推理引擎
+  OptionsPtr options_;                    ///< SuperPoint 配置项
+  SuperPointEngine::InferencePtr engine_; ///< 推理引擎实例
 };
 }
