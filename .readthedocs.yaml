@@ -1,4 +1,4 @@
-# .readthedocs.yml
+# .readthedocs.yaml
 version: 2
 
 build:
@@ -9,11 +9,6 @@ build:
     post_create_environment:
       - cd docs
       - doxygen Doxyfile
-    post_build:
-      # 构建Sphinx文档
-      - sphinx-build -b html source build/html
-      - sphinx-build -b latex source build/latex
-      - cd build/latex && make pdf
 
 sphinx:
   configuration: docs/source/conf.py
@@ -21,29 +16,9 @@ sphinx:
 python:
   install:
     - requirements: docs/requirements.txt
-    - method: pip
-      path: .
-      extra_requirements:
-        - docs
 
 # 构建前准备
 
 formats:
   - pdf
   - epub
-  - htmlzip
-
-# 版本配置
-versions:
-  - 1.0.0
-  - devel
-
-# 文件忽略规则
-ignore:
-  - "**/*.o"
-  - "**/*.so"
-  - "**/*.a"
-  - "build/**"
-  - "3rdparty/**"
-  - "**/.git/**"
-  - "**/CMakeCache.txt"

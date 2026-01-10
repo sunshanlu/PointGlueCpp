@@ -1,29 +1,26 @@
-# PointGlueCpp
+![pointgluecpp](./pointgluecpp.png)
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![C++20](https://img.shields.io/badge/C++-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
-[![CMake](https://img.shields.io/badge/CMake-3.10+-064F8C.svg)](https://cmake.org/)
-[![Doxygen](https://img.shields.io/badge/docs-Doxygen-blue.svg)](docs/)
-[![Sphinx](https://img.shields.io/badge/docs-Sphinx-green.svg)](docs/)
+<p align="center">
+  <img alt="GitHub Repo Stars" src="https://img.shields.io/github/stars/sunshanlu/pointgluecpp">
+  <img alt="GitHub Repo Forks" src="https://img.shields.io/github/forks/sunshanlu/pointgluecpp">
+</p>
+
+<p align="center">
+  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/sunshanlu/npycpp">
+  <img alt="GitHub Repo License" src="https://img.shields.io/github/license/sunshanlu/npycpp">
+  <img alt="GitHub Repo Issues" src="https://img.shields.io/github/issues/sunshanlu/npycpp">
+  <img alt="docs doxygen" src="https://img.shields.io/badge/docs-Doxygen-blue.svg">
+  <img alt="docs sphinx" src="https://img.shields.io/badge/docs-Sphinx-green.svg">
+</p>
+
+<p align="center">
+  English |
+  <a href="./README_CN.md">中文</a>
+</p>
+
+# pointgluecpp - C++ library for SuperPoint and SuperGlue
 
 A high-performance C++ implementation of SuperPoint and SuperGlue for feature detection and matching.
-
-English | [简体中文](README_CN.md)
-
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [Examples](#examples)
-- [Performance](#performance)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
 
 ## 🎯 Overview
 
@@ -108,7 +105,8 @@ SuperGlue
 - **TBB**: 2021.x (Intel Threading Building Blocks)
 - **ONNX Runtime**: 1.10+ (optional, for ONNX Runtime backend)
 - **OpenVINO**: 2022.0+ (optional, for OpenVINO backend)
-- **GTest**: 1.11+ (for testing)
+- **GTest**: (for testing)
+- **benchmark**: (for benchmarking)
 
 ### Python Dependencies (for documentation)
 - Python 3.8+
@@ -130,10 +128,10 @@ git submodule update --init --recursive
 #### Ubuntu/Debian
 
 ```bash
-sudo apt-get update
-sudo apt-get install cmake build-essential
-sudo apt-get install libopencv-dev libspdlog-dev libtbb-dev
-sudo apt-get install libgtest-dev
+sudo apt update
+sudo apt install cmake build-essential
+sudo apt install libopencv-dev libspdlog-dev libtbb-dev
+sudo apt install libgtest-dev
 ```
 
 #### Install ONNX Runtime
@@ -152,7 +150,7 @@ Or build from source: https://github.com/microsoft/onnxruntime
 #### Install OpenVINO
 
 ```bash
-sudo apt-get install openvino-dev
+sudo apt install openvino-dev
 ```
 
 Or download from: https://docs.openvino.ai/
@@ -407,7 +405,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ```bash
 # Install development dependencies
-sudo apt-get install clang-format clang-tidy
+sudo apt install clang-format clang-tidy
 
 # Format code
 find . -name "*.cc" -o -name "*.h" | xargs clang-format -i
