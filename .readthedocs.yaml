@@ -3,6 +3,8 @@ version: 2
 
 build:
   os: ubuntu-22.04
+  apt_packages:
+    - doxygen
   tools:
     python: "3.10"
   jobs:
