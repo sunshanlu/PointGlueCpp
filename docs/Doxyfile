@@ -2,7 +2,7 @@
 PROJECT_NAME           = "PointGlueCpp"
 PROJECT_NUMBER         = "1.0.0"
 PROJECT_BRIEF          = "SuperPoint and SuperGlue feature detection and matching in C++"
-OUTPUT_DIRECTORY       = build
+OUTPUT_DIRECTORY       = docs/build
 CREATE_SUBDIRS         = YES
 
 INPUT                  = ../include ../src

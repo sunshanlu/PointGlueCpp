@@ -10,7 +10,6 @@ build:
   jobs:
     post_create_environment:
       - cd docs
-      - ls
       - doxygen
 
 sphinx:
