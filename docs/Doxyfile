@@ -5,9 +5,9 @@ PROJECT_BRIEF          = "SuperPoint and SuperGlue feature detection and matchin
 OUTPUT_DIRECTORY       = docs/build
 CREATE_SUBDIRS         = YES
 
-INPUT                  = ../include ../src
+INPUT                  = include src
 RECURSIVE              = YES
-EXCLUDE                = ../test
+EXCLUDE                = test
 EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       = */CMakeFiles/* */build/* */3rdparty/*
 
@@ -16,7 +16,7 @@ ENABLE_PREPROCESSING    = YES
 MACRO_EXPANSION         = YES
 EXPAND_ONLY_PREDEF      = NO
 SEARCH_INCLUDES         = YES
-INCLUDE_PATH            = ../include
+INCLUDE_PATH            = include
 INCLUDE_FILE_PATTERNS   = *.h *.hpp
 
 GENERATE_HTML          = NO

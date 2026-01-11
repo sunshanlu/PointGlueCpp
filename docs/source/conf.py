@@ -16,6 +16,7 @@ extensions = [
 breathe_projects = {
     "pointgluecpp": "../build/xml"
 }
+
 breathe_default_project = "pointgluecpp"
 
 language = 'zh_CN'
